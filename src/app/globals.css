@@ -31,6 +31,39 @@
     }
 }
 
+body {
+    color: rgb(var(--foreground-rgb));
+    background: #000;
+}
+
+*,
+*::after,
+*::before,
+.sb-show-main.sb-main-padded {
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .dashboard-glow {
+        text-shadow:
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 15px #fff,
+            0 0 20px #fff,
+            0 0 30px #fff,
+            0 0 40px #fff,
+            0 0 55px #fff,
+            0 0 75px #fff;
+    }
+}
+
 @layer base {
     * {
         @apply border-border;

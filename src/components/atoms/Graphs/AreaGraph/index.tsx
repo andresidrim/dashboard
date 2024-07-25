@@ -23,7 +23,7 @@ export function AreaGraph({
     title,
     resume,
     description,
-    date,
+    footer,
     config,
     data,
     className,
@@ -71,7 +71,7 @@ export function AreaGraph({
                             {resume}
                         </div>
                         <div className='flex items-center gap-2 leading-none text-muted-foreground'>
-                            {date}
+                            {footer}
                         </div>
                     </div>
                 </div>
