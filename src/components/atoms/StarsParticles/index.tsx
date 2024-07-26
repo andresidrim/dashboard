@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadStarsPreset } from '@tsparticles/preset-stars'
 import { type ISourceOptions } from '@tsparticles/engine'
 
-const StarsParticles = () => {
+const StarsParticles = ({ className }: { className?: string }) => {
     useEffect(() => {
         initParticlesEngine(async (engine) => await loadStarsPreset(engine))
     }, [])
@@ -28,6 +28,7 @@ const StarsParticles = () => {
 
     return (
         <Particles
+            className={className}
             id='tsparticles'
             options={options}
         />

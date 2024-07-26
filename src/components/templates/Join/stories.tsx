@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react'
-import LoginPage from '.'
+import Join from '.'
 
 export default {
-    title: 'Components/Templates/LoginPage',
-    component: LoginPage,
+    title: 'Components/Templates/Join',
+    component: Join,
 } as Meta
 
 type Story = StoryObj

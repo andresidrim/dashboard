@@ -1,9 +1,5 @@
-import LoginPage from '@/components/templates/LoginPage'
+import { Hero } from '@/components/templates'
 
 export default function Home() {
-    return (
-        <main>
-            <LoginPage />
-        </main>
-    )
+    return <Hero />
 }

@@ -1,3 +1,4 @@
-import LoginPage from './LoginPage'
+import Join from './Join'
+import Hero from './Hero'
 
-export { LoginPage }
+export { Join, Hero }

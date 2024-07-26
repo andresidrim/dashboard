@@ -3,7 +3,7 @@ import { SignUp, SignIn } from '@/components/molecules'
 import { cn } from '@/service/utils/className'
 import { bungeeHairline } from '@/styles/typography/fonts'
 
-const LoginPage = () => {
+const Join = () => {
     return (
         <section className='flex w-screen h-screen items-center justify-start bg-gradient-to-tr from-purple-950 to-pink-900 overflow-hidden'>
             <StarsParticles />
@@ -26,4 +26,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
+export default Join
