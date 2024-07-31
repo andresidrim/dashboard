@@ -7,13 +7,7 @@ import { IoEye, IoEyeOff } from 'react-icons/io5'
 
 const Input = forwardRef(
     (
-        {
-            invalid,
-            errorMessage,
-            type = 'text',
-            className,
-            ...props
-        }: InputProps,
+        { errorMessage, type = 'text', className, ...props }: InputProps,
         ref: Ref<HTMLInputElement>
     ) => {
         const [visible, setVisible] = useState<boolean>(false)
@@ -31,7 +25,7 @@ const Input = forwardRef(
                         ref={ref}
                         className={cn(
                             'bg-transparent px-3 py-1 border-solid border-b border-b-black text-black outline outline-none placeholder:italic text-lg w-full',
-                            invalid && 'border-b-2 border-b-red-600',
+                            errorMessage && 'border-b-2 border-b-red-600',
                             className
                         )}
                         type={
@@ -56,7 +50,7 @@ const Input = forwardRef(
                 </div>
                 <span
                     className={cn(
-                        !invalid && 'hidden',
+                        !errorMessage && 'hidden',
                         'text-red-600 font-semibold'
                     )}
                 >

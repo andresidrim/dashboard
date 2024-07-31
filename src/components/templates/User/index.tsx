@@ -10,8 +10,10 @@ import { getChartsByUserId, getUserById } from '@/service/utils/fetchData'
 import { useEffect, useState } from 'react'
 import { colors } from '@/styles/graphs/colors'
 import { WorkChart, type User } from '@/service/db/types'
+import { useUser } from '@/context/user'
 
 const User = ({ id, className, ...props }: UserPageProps) => {
+    const { user: loggedUser } = useUser()
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [chart, setChart] = useState<WorkChart[]>()
@@ -66,60 +68,72 @@ const User = ({ id, className, ...props }: UserPageProps) => {
                     <h1 className='text-2xl font-semibold mb-10'>
                         {user.name}
                     </h1>
-                    {chart ? (
-                        <div className='grid grid-cols-2 gap-10'>
-                            {chart.map((c, idx) => (
-                                <BarGraph
-                                    key={idx}
-                                    id={String(c.id)}
-                                    config={c.config}
-                                    data={c.data}
-                                    title={c.title}
-                                    description='asdasd'
-                                    className='min-w-[600px] w-[50%]'
-                                >
-                                    {c.category.map((category, idx) => (
-                                        <Bar
+                    {loggedUser?.id === user.id || !user.private ? (
+                        chart && chart.length ? (
+                            <div className='grid grid-cols-2 gap-10'>
+                                {chart.map((c, idx) => (
+                                    <>
+                                        <BarGraph
                                             key={idx}
-                                            dataKey={category}
-                                            type='natural'
-                                            fill={colors[idx]}
-                                            fillOpacity={0.75}
-                                            stroke={colors[idx]}
-                                            stackId='a'
+                                            id={String(c.id)}
+                                            config={c.config}
+                                            data={c.data}
+                                            title={c.title}
+                                            // description={c.description}
+                                            className='min-w-[600px] w-[50%]'
+                                        >
+                                            {c.category.map((category, idx) => (
+                                                <Bar
+                                                    key={idx}
+                                                    dataKey={category}
+                                                    type='natural'
+                                                    fill={colors[idx]}
+                                                    fillOpacity={0.75}
+                                                    stroke={colors[idx]}
+                                                    stackId='a'
+                                                />
+                                            ))}
+                                        </BarGraph>
+                                        <PieGraph
+                                            id={String(c.id)}
+                                            key={idx}
+                                            config={c.config}
+                                            data={c.data}
+                                            dataKey='hours'
+                                            nameKey='category'
+                                            title={c.title}
+                                            totalAmount={String(c.total_hours)}
+                                            className='min-w-[600px] w-[50%]'
                                         />
-                                    ))}
-                                </BarGraph>
-                            ))}
-                            {chart.map((c, idx) => (
-                                <PieGraph
-                                    id={String(c.id)}
-                                    key={idx}
-                                    config={c.config}
-                                    data={c.data}
-                                    dataKey='hours'
-                                    nameKey='category'
-                                    title={c.title}
-                                    totalAmount={String(c.total_hours)}
-                                    className='min-w-[600px] w-[50%]'
-                                />
-                            ))}
-                        </div>
+                                    </>
+                                ))}
+                            </div>
+                        ) : (
+                            'No Charts Found'
+                        )
                     ) : (
-                        'No Charts Found'
+                        'Private account'
                     )}
-                    <Button
-                        className='z-10'
-                        asChild
-                    >
-                        <Link href={`/user/${id}/add-chart`}>Add Chart</Link>
-                    </Button>
-                    <Button
-                        className='z-10'
-                        onClick={async () => await signOut()}
-                    >
-                        Sign Out
-                    </Button>
+                    {loggedUser?.id === user.id && (
+                        <>
+                            <Button
+                                className='z-10'
+                                asChild
+                            >
+                                <Link href={`/user/${id}/add-chart`}>
+                                    Add Chart
+                                </Link>
+                            </Button>
+                            <Button
+                                className='z-10'
+                                onClick={async () => {
+                                    await signOut()
+                                }}
+                            >
+                                Sign Out
+                            </Button>
+                        </>
+                    )}
                 </div>
             ) : (
                 'User Not Found'

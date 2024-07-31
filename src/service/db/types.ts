@@ -8,6 +8,7 @@ export type User = {
     email: string
     password: string
     team_id?: number
+    private: boolean
 }
 
 export type WorkChart = {

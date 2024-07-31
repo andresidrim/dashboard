@@ -4,35 +4,38 @@ import GenericForm from '../GenericForm'
 import { cn } from '@/service/utils/className'
 import { FormProps } from '../types'
 import { Input, Button, Link } from '@/components/atoms'
-import { FormEvent, forwardRef, Ref, useState } from 'react'
-import { useForm } from '@/context/form'
+import { forwardRef, Ref } from 'react'
+import { useJoin } from '@/context/form'
 import { signIn } from 'next-auth/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { SignInSchema, signInSchema } from '@/schema/validation'
 
 const SignIn = forwardRef(
     ({ className, ...props }: FormProps, ref: Ref<HTMLFormElement>) => {
-        const { current, changeState } = useForm()
+        const { current, changeState } = useJoin()
 
-        const [email, setEmail] = useState<string>('')
-        const [password, setPassword] = useState<string>('')
-        const [loading, setLoading] = useState<boolean>(false)
+        const {
+            register,
+            handleSubmit,
+            formState: { errors, isSubmitting },
+        } = useForm<SignInSchema>({
+            resolver: zodResolver(signInSchema),
+            mode: 'all',
+        })
 
-        const handleSubmit = async (e: FormEvent) => {
-            setLoading(true)
-
-            e.preventDefault()
-
+        const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
             await signIn('credentials', {
                 redirect: false,
-                email,
-                password,
+                email: data.email,
+                password: data.password,
             })
-
-            setLoading(false)
         }
 
         return (
             <GenericForm
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 ref={ref}
                 className={cn(
                     'px-24 bg-white min-w-[552px] w-[552px] min-h-[100vh] rounded-r-[28px] form-shadow duration-300 transition-opacity ease-in-out z-10',
@@ -47,18 +50,18 @@ const SignIn = forwardRef(
                 </h1>
                 <Input
                     placeholder='youremail@example.com'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register('email')}
+                    errorMessage={errors.email?.message}
                 />
                 <Input
                     placeholder='********'
                     type='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    {...register('password')}
+                    errorMessage={errors.password?.message}
                 />
                 <Button
                     className={cn('w-full', current && 'pointer-events-none')}
-                    loading={loading}
+                    loading={isSubmitting}
                 >
                     Sign In
                 </Button>

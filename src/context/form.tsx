@@ -25,10 +25,10 @@ const FormProvider = ({ children }: formProviderProps) => {
     )
 }
 
-export const useForm = () => {
+export const useJoin = () => {
     const context = useContext<formContextData>(FormContext)
 
-    if (!context) throw new Error('useForm must be used within a FormProvider')
+    if (!context) throw new Error('useJoin must be used within a FormProvider')
 
     return context
 }

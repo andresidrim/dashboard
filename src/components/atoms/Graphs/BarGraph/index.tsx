@@ -19,6 +19,7 @@ import {
     ChartTooltipContent,
 } from '@/components/ui/chart'
 import { removeChartById } from '@/service/utils/removeData'
+import { useUser } from '@/context/user'
 
 export function BarGraph({
     children,
@@ -32,6 +33,8 @@ export function BarGraph({
     id,
     ...props
 }: GraphProps) {
+    const { user } = useUser()
+
     return (
         <Card
             className={className}
@@ -40,15 +43,17 @@ export function BarGraph({
             <CardHeader className='relative'>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
-                <button
-                    className='text-red-400 z-50 w-fit top-5 right-6 absolute'
-                    onClick={async () => {
-                        await removeChartById(id)
-                        location.reload()
-                    }}
-                >
-                    <IoTrashSharp size={24} />
-                </button>
+                {user && (
+                    <button
+                        className='text-red-400 z-50 w-fit top-5 right-6 absolute'
+                        onClick={async () => {
+                            await removeChartById(id)
+                            location.reload()
+                        }}
+                    >
+                        <IoTrashSharp size={24} />
+                    </button>
+                )}
             </CardHeader>
             <CardContent>
                 <ChartContainer config={config}>
@@ -77,7 +82,7 @@ export function BarGraph({
                     {resume}
                 </div>
                 <div className='leading-none text-muted-foreground'>
-                    Showing total visitors for the last 6 months
+                    {footer}
                 </div>
             </CardFooter>
         </Card>

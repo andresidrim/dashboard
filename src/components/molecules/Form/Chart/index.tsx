@@ -9,6 +9,9 @@ import { categories } from '@/service/utils/chartConfig'
 import { insertChartDataById } from '@/service/utils/insertData'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/user'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { addChartSchema, AddChartSchema } from '@/schema/validation'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 const ChartForm = forwardRef(
     ({ className, ...props }: FormProps, ref: Ref<HTMLFormElement>) => {
@@ -16,8 +19,30 @@ const ChartForm = forwardRef(
 
         const router = useRouter()
 
-        const [loading, setLoading] = useState<boolean>(false)
-        const [title, setTitle] = useState<string>('')
+        const {
+            register,
+            handleSubmit,
+            formState: { errors, isSubmitting },
+        } = useForm<AddChartSchema>({
+            resolver: zodResolver(addChartSchema),
+            mode: 'all',
+        })
+
+        const onSubmit: SubmitHandler<AddChartSchema> = async (data) => {
+            if (!user || !user.id) {
+                return
+            }
+
+            await insertChartDataById(
+                user.id,
+                data.title,
+                hours,
+                selectedCategories
+            )
+
+            router.push('/user')
+        }
+
         const [selectedCategories, setSelectedCategories] = useState<string[]>(
             []
         )
@@ -34,26 +59,9 @@ const ChartForm = forwardRef(
             })
         }
 
-        const handleSubmit = async (e: FormEvent) => {
-            setLoading(true)
-
-            e.preventDefault()
-
-            if (!user || !user.id) {
-                setLoading(false)
-                return
-            }
-
-            await insertChartDataById(user.id, title, hours, selectedCategories)
-
-            setLoading(false)
-
-            router.push('/user')
-        }
-
         return (
             <GenericForm
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 ref={ref}
                 className={cn(
                     'px-24 bg-white min-w-[552px] w-[552px] min-h-[100vh] h-full rounded-r-[28px] form-shadow duration-300 transition-opacity ease-in-out z-10',
@@ -66,8 +74,8 @@ const ChartForm = forwardRef(
                 </h1>
                 <Input
                     placeholder='Chart Title'
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    {...register('title')}
+                    errorMessage={errors.title?.message}
                 />
                 <h2 className='w-full font-bold text-xl'>Select Categories</h2>
                 <div className='grid grid-cols-2 place-items-center w-full gap-10'>
@@ -97,7 +105,7 @@ const ChartForm = forwardRef(
                 ))}
                 <Button
                     className={cn('w-full')}
-                    loading={loading}
+                    loading={isSubmitting}
                 >
                     Create Chart
                 </Button>

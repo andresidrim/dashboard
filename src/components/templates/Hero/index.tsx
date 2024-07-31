@@ -37,7 +37,7 @@ const Hero = () => {
                 viewport={{ once: true }}
             >
                 <Button
-                    className='button-shadow'
+                    className='button-shadow z-10'
                     asChild
                 >
                     <Link href='/join'>Get Started!</Link>

@@ -20,6 +20,7 @@ import {
     ChartTooltipContent,
 } from '@/components/ui/chart'
 import { IoTrashSharp } from 'react-icons/io5'
+import { useUser } from '@/context/user'
 
 export function PieGraph({
     config,
@@ -33,14 +34,18 @@ export function PieGraph({
     dataKey,
     nameKey,
 }: GraphProps & PieProps & { totalAmount: string }) {
+    const { user } = useUser()
+
     return (
         <Card className={cn('flex flex-col', className)}>
             <CardHeader className='relative items-center pb-0'>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
-                <button className='text-red-400 z-50 w-fit top-5 right-6 absolute'>
-                    <IoTrashSharp size={24} />
-                </button>
+                {user && (
+                    <button className='text-red-400 z-50 w-fit top-5 right-6 absolute'>
+                        <IoTrashSharp size={24} />
+                    </button>
+                )}
             </CardHeader>
             <CardContent className='flex-1 pb-0'>
                 <ChartContainer
