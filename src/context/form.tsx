@@ -12,7 +12,7 @@ type formContextData = {
 export const FormContext = createContext({} as formContextData)
 
 const FormProvider = ({ children }: formProviderProps) => {
-    const [current, setCurrent] = useState<boolean>(true)
+    const [current, setCurrent] = useState<boolean>(false)
 
     const changeState = () => {
         setCurrent((currState) => !currState)

@@ -3,9 +3,12 @@
 import FormProvider from '@/context/form'
 import { ReactNode } from 'react'
 import { SessionProvider } from 'next-auth/react'
+import UserProvider from '@/context/user'
 
 export const Providers = ({ children }: { children: ReactNode }) => (
     <SessionProvider refetchOnWindowFocus={false}>
-        <FormProvider>{children}</FormProvider>
+        <UserProvider>
+            <FormProvider>{children}</FormProvider>
+        </UserProvider>
     </SessionProvider>
 )

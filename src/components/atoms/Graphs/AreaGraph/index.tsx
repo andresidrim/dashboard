@@ -17,6 +17,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart'
+import { cn } from '@/lib/utils'
 
 export function AreaGraph({
     children,
@@ -31,7 +32,7 @@ export function AreaGraph({
 }: GraphProps) {
     return (
         <Card
-            className={className}
+            className={cn('w-full h-fit bg-zinc-800 z-10', className)}
             {...props}
         >
             <CardHeader>
@@ -48,7 +49,7 @@ export function AreaGraph({
                             right: 12,
                         }}
                     >
-                        <CartesianGrid vertical={false} />
+                        {/* <CartesianGrid vertical={false} /> */}
                         <XAxis
                             dataKey='month'
                             tickLine={false}

@@ -1,9 +1,10 @@
+'use server'
+
 import NextAuth from 'next-auth'
 import { signOut } from 'next-auth/react'
 import Credentials from 'next-auth/providers/credentials'
-// import { validateUser } from '@/services/lib/fetchData'
-// import { supabase } from '@/services/lib/supabaseClient'
-// import { User } from '@/data/types'
+import { getUserByEmail, getUserById } from '@/service/utils/fetchData'
+import bcrypt from 'bcryptjs'
 
 const handler = NextAuth({
     providers: [
@@ -16,20 +17,24 @@ const handler = NextAuth({
             authorize: async (credentials) => {
                 if (!credentials) return null
 
-                const { email, password } = credentials
+                const { success, user } = await getUserByEmail(
+                    credentials.email
+                )
 
-                if (
-                    email === 'andrecorreasidrim@gmail.com' &&
-                    password === 'senha'
-                ) {
-                    return {
-                        id: '1',
-                        name: 'André Sidrim',
-                        email: 'andrecorreasidrim@gmail.com',
-                    }
+                if (!success || !user) return null
+
+                const validPassword = await bcrypt.compare(
+                    credentials.password,
+                    user.password
+                )
+
+                if (!validPassword) return null
+
+                return {
+                    id: String(user.id),
+                    email: user.email,
+                    name: user.name,
                 }
-
-                return null
             },
         }),
     ],
@@ -41,26 +46,32 @@ const handler = NextAuth({
     jwt: {
         secret: process.env.NEXTAUTH_SECRET,
     },
-    // callbacks: {
-    //     async session({ session, token }) {
-    //         // Check if user still exists
-    //         const { data, error } = await supabase
-    //             .from('users')
-    //             .select()
-    //             .eq('id', token.sub)
-    //             .single()
+    callbacks: {
+        async session({ session, token }) {
+            // Ensure token.sub is present
+            if (!token.sub) {
+                session.user = undefined
+                return session
+            }
 
-    //         const myUser: User = data
+            // Fetch user by ID
+            const { success, user } = await getUserById(token.sub)
 
-    //         if (error || !myUser) {
-    //             // If user no longer exists, return an empty session object
-    //             await signOut()
-    //             return { ...session, user: undefined }
-    //         }
+            if (!success || !user) {
+                // Invalidate the session if the user no longer exists
+                await signOut()
+                session.user = undefined
+            } else {
+                // Populate session with user data
+                session.user = {
+                    email: user.email,
+                    name: user.name,
+                }
+            }
 
-    //         return session
-    //     },
-    // },
+            return session
+        },
+    },
 })
 
 export { handler as GET, handler as POST }

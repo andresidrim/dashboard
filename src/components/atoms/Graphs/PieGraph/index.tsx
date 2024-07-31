@@ -1,8 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { TrendingUp } from 'lucide-react'
-import { Label, Pie, PieChart } from 'recharts'
+import { Label, Pie, PieChart, PieProps } from 'recharts'
 
 import { GraphProps } from '../types'
 import { cn } from '@/lib/utils'
@@ -20,6 +19,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart'
+import { IoTrashSharp } from 'react-icons/io5'
 
 export function PieGraph({
     config,
@@ -29,21 +29,18 @@ export function PieGraph({
     resume,
     footer,
     className,
-    ...props
-}: GraphProps) {
-    const totalVisitors = React.useMemo(() => {
-        // @ts-ignore
-        return data.reduce((acc, curr) => acc + curr.visitors, 0)
-    }, [data])
-
+    totalAmount,
+    dataKey,
+    nameKey,
+}: GraphProps & PieProps & { totalAmount: string }) {
     return (
-        <Card
-            className={cn('flex flex-col', className)}
-            {...props}
-        >
-            <CardHeader className='items-center pb-0'>
+        <Card className={cn('flex flex-col', className)}>
+            <CardHeader className='relative items-center pb-0'>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
+                <button className='text-red-400 z-50 w-fit top-5 right-6 absolute'>
+                    <IoTrashSharp size={24} />
+                </button>
             </CardHeader>
             <CardContent className='flex-1 pb-0'>
                 <ChartContainer
@@ -57,8 +54,8 @@ export function PieGraph({
                         />
                         <Pie
                             data={data}
-                            dataKey='visitors'
-                            nameKey='browser'
+                            dataKey={dataKey}
+                            nameKey={nameKey}
                             innerRadius={60}
                             strokeWidth={5}
                         >
@@ -81,14 +78,14 @@ export function PieGraph({
                                                     y={viewBox.cy}
                                                     className='fill-foreground text-3xl font-bold'
                                                 >
-                                                    {totalVisitors.toLocaleString()}
+                                                    {totalAmount}
                                                 </tspan>
                                                 <tspan
                                                     x={viewBox.cx}
                                                     y={(viewBox.cy || 0) + 24}
                                                     className='fill-muted-foreground'
                                                 >
-                                                    Visitors
+                                                    Hours Worked
                                                 </tspan>
                                             </text>
                                         )

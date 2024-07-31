@@ -1,4 +1,4 @@
-import { ChartConfig } from '@/components/ui/chart'
+import { ChartConfig } from '@/service/utils/chartConfig'
 import { HTMLAttributes, ReactNode } from 'react'
 
 export type GraphProps = {
@@ -8,4 +8,5 @@ export type GraphProps = {
     footer?: string
     config: ChartConfig
     data: object[]
+    id: number | string
 } & HTMLAttributes<HTMLDivElement>

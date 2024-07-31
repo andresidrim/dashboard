@@ -1,7 +1,7 @@
 'use client'
 
-import { TrendingUp } from 'lucide-react'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { IoTrashSharp } from 'react-icons/io5'
+import { BarChart, CartesianGrid, XAxis } from 'recharts'
 
 import { GraphProps } from '../types'
 
@@ -14,11 +14,11 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 import {
-    ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart'
+import { removeChartById } from '@/service/utils/removeData'
 
 export function BarGraph({
     children,
@@ -29,6 +29,7 @@ export function BarGraph({
     resume,
     footer,
     className,
+    id,
     ...props
 }: GraphProps) {
     return (
@@ -36,9 +37,18 @@ export function BarGraph({
             className={className}
             {...props}
         >
-            <CardHeader>
+            <CardHeader className='relative'>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
+                <button
+                    className='text-red-400 z-50 w-fit top-5 right-6 absolute'
+                    onClick={async () => {
+                        await removeChartById(id)
+                        location.reload()
+                    }}
+                >
+                    <IoTrashSharp size={24} />
+                </button>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={config}>

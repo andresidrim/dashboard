@@ -17,6 +17,7 @@ export const Defualt: Story = {
         config: {
             visitors: {
                 label: 'Visitors',
+                color: '',
             },
             chrome: {
                 label: 'Chrome',

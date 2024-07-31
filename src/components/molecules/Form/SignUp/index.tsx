@@ -6,32 +6,33 @@ import { FormProps } from '../types'
 import { Input, Button, Link } from '@/components/atoms'
 import { FormEvent, forwardRef, Ref, useEffect, useState } from 'react'
 import { useForm } from '@/context/form'
-import { signIn, signOut } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
+
+import { insertUser } from '@/service/utils/insertData'
 
 const SignUp = forwardRef(
     ({ className, ...props }: FormProps, ref: Ref<HTMLFormElement>) => {
-        const { data } = useSession()
-
-        useEffect(() => {
-            if (!data) return
-            console.log(data.user)
-        }, [data])
-
         const { current, changeState } = useForm()
 
         const [name, setName] = useState<string>('')
         const [email, setEmail] = useState<string>('')
         const [password, setPassword] = useState<string>('')
+        const [loading, setLoading] = useState<boolean>(false)
 
         const handleSubmit = async (e: FormEvent) => {
+            setLoading(true)
+
             e.preventDefault()
+
+            await insertUser(name, email, password)
 
             await signIn('credentials', {
                 redirect: false,
                 email,
                 password,
             })
+
+            setLoading(false)
         }
 
         return (
@@ -67,6 +68,7 @@ const SignUp = forwardRef(
                 />
                 <Button
                     className={cn('w-full', !current && 'pointer-events-none')}
+                    loading={loading}
                 >
                     Sign Up
                 </Button>

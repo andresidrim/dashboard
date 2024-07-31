@@ -1,3 +1,3 @@
-import { GenericForm, SignUp, SignIn } from './Form'
+import { GenericForm, SignUp, SignIn, ChartForm } from './Form'
 
-export { GenericForm, SignUp, SignIn }
+export { GenericForm, SignUp, SignIn, ChartForm }
